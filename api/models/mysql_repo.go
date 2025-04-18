@@ -14,7 +14,7 @@ import (
 )
 
 type Block struct {
-	Number     int64     `gorm:"column:number"`
+	Number     int64     `gorm:"column:number; primaryKey"`
 	ParentHash string    `gorm:"column:parent_hash"`
 	Timestamp  time.Time `gorm:"column:timestamp"`
 	TxHash     string    `gorm:"column:tx_hash"`
@@ -32,18 +32,18 @@ type Transaction struct {
 }
 
 type EthTxReceipt struct {
-	TxHash          string    `gorm:"primaryKey;size:66" json:"tx_hash"`
-	BlockHash       string    `gorm:"size:66" json:"block_hash"`
-	BlockNumber     uint64    `json:"block_number"`
-	ContractAddress string    `gorm:"size:42" json:"contract_address"`
-	GasUsed         uint64    `json:"gas_used"`
-	Status          uint64    `json:"status"`
-	From            string    `gorm:"size:42" json:"from"`
-	To              string    `gorm:"size:42" json:"to"`
-	LogsCount       int       `json:"logs_count"`
-	CreatedAt       time.Time `json:"created_at"`
-	UpdatedAt       time.Time `json:"updated_at"`
-	ReceiptData     string    `gorm:"type:text" json:"receipt_data"` // 存储完整的收据数据 JSON
+	TxHash          string    `gorm:"column:tx_hash;primaryKey;size:66"`
+	BlockHash       string    `gorm:"column: block_hash;size:66"`
+	BlockNumber     uint64    `gorm:"column:block_number"`
+	ContractAddress string    `gorm:"column:contract_address;size:42"`
+	GasUsed         uint64    `gorm:"column:gas_used"`
+	Status          uint64    `gorm:"column:status"`
+	From            string    `gorm:"column:from;size:42"`
+	To              string    `gorm:"size:42" "column:to"`
+	LogsCount       int       `gorm:"column:logs_count"`
+	CreatedAt       time.Time `gorm:"column:created_at"`
+	UpdatedAt       time.Time `gorm:"column:updated_at"`
+	ReceiptData     string    `gorm:"type:text" "column:receipt_data"` // 存储完整的收据数据 JSON
 }
 
 func NewBlock() *Block {
@@ -150,7 +150,7 @@ func GetTxFromMySQL(TxHash string) (*Transaction, error) {
 	return &transaction, nil
 }
 
-func SaveTxFromMySQL(transaction *Transaction) error{
+func SaveTxFromMySQL(transaction *Transaction) error {
 	return db.Mysql.Create(transaction).Error
 }
 
